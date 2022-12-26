@@ -1,2 +1,26 @@
+body {
+  background-color: #000000;
+  color: #ffffff;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-/* Your CSS Code here. */
+.container {
+  display: flex;
+  justify-content: space-around;
+  width: 70%;
+  height: 60%;
+  padding: 20px;
+  border: 1px solid #ffffff;
+  flex-direction: column;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: #000000;
+}
