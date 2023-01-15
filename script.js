@@ -1,138 +1,93 @@
-//your code here
-// element.style.display = none
-// element.textContent 
-// element.innerHtml
-// element.innerText
-// element.value
-// element.id
-// element.src 
-// element.classList.add('')
-
 
 /**
-     *  {
-     *    name : {
-     *              first: "Anshu",
-     *              last: "Rai"
-     *            }
-     *   }
-     *   picture : {
-     *      large: 'http://abc.com',
-     *      medium: 
-     *      thumbnail : 
-     * }
-     * 
-     *  <img  src= {url} >
-     */
+ *  {
+ *      info: page: 1 ,results: 1 ,seed: ,"80bcc66d0d0f0abd",
+ *      results : [
+ * {
+ *          
+ * }]
 
-/**
-* 
-* "dob": {
-date": "1975-11-07T05:20:35.660Z",
-"age": 47
-}
-*/
+ *  }
+ */
+
+
 let user = {};
-let userAge = 0;
+const imgElement = document.getElementById("img"),
+  nameElement = document.getElementById("name"),
+  additionalInfo = document.getElementById("add-info"),
+  infoButtons = Array.from(document.querySelectorAll("[data-id]")),
+  fetchBtn = document.getElementById("getUser");
 
-const nameElement = document.getElementById("name"),
-    imageElement = document.getElementById("img"),
-    phone = document.getElementById("phone"),
-    age = document.getElementById("age"),
-    email = document.getElementById("email"),
-    ageButtons = document.querySelector("[data-id='age']"),
-    phoneButtons = document.querySelector("[data-id='phone']"),
-    emailButtons = document.querySelector("[data-id='email']"),
-    fetchButton = document.getElementById("getUser"),
-    tabs = [
-        {
-            name: 'age',
-            element: age
-        },
-        {
-            name: 'email',
-            element: email
-        }, {
-            name: 'phone',
-            element: phone
-        }
-    ],
-    additionalButtons = {
-        'age': {
-            element: age,
-            data: 'age'
-        },
-        'phone': {
-            element: phone,
-            data: 'phone'
-        },
-        'email': {
-            element: email,
-            data: 'email'
-        }
-    };
+const renderUserBasicDetails = (user) => {
+
+   nameElement.innerHTML = '';
+   imgElement.innerHTML = '';
+    const nameSpan= document.createElement('span');
+    const img = document.createElement('img');
+
+    // name: { title: 'Miss', first: 'Adriza', last: 'Nascimento'}
+    nameSpan.textContent = user.name.first + " " + user.name.last;
+
+    img.src = user.picture.large;
+    img.classList.add('img')
+
+    imgElement.appendChild(img);
+
+    nameElement.appendChild(nameSpan);
+}
 
 const fetchUser = async () => {
-    try {
-        const response = await fetch("https://randomuser.me/api"),
-            data = await response.json();
-        user = data.results[0];
-        user.age = user.dob.age;
+    const resp = await fetch("https://randomuser.me/api/");
+    const data = await resp.json();
+    user = data.results[0];
+    console.log("User",user);
+    renderUserBasicDetails(user);
+} 
 
-        nameElement.textContent = user.name.first + " " + user.name.last;
-        imageElement.src = user.picture.large;
+const createInfoELement = (info) => {
 
-    } catch (error) {
-        console.error("Error in Fetching User", error);
-    }
-}
-
-const handleAdditionInfoButtonClick = (btnName) => {
-    console.log("Names", additionalButtons[btnName]);
-    let infoElement = document.getElementById('info'),
-        data = user[additionalButtons[btnName].data];
-
-    if (infoElement) {
-        infoElement.textContent = data;
-    }
-    else {
-        infoElement = document.createElement("span");
-        infoElement.textContent = data;
-        infoElement.id = 'info';
+    while(additionalInfo.firstChild) {
+        additionalInfo.removeChild(additionalInfo.firstChild);
     }
 
-    additionalButtons[btnName].element.style.display = 'flex';
-    additionalButtons[btnName].element.appendChild(infoElement);
-    handleAdditionButtonProps('none');
-    fetchButton.textContent = 'Back';
-    setActiveTab(btnName);
+    // create an span of label 
+    // span with value 
 
+    const label = document.createElement('span');
+    const infoData = document.createElement('span');
+
+    label.textContent = info.label;
+    infoData.textContent = info.data;
+
+    // add it inside additional info
+
+    additionalInfo.appendChild(label);
+    additionalInfo.appendChild(infoData);
 }
 
-const handleAdditionButtonProps = (val) => {
-    ageButtons.style.display = val;
-    phoneButtons.style.display = val;
-    emailButtons.style.display = val;
+const handleInfoButtonClick = (event) => {
+    const info = [
+        {
+            id: 'age',
+            label: "Age",
+            data: user.dob.age
+        },
+        {
+            id: 'phone',
+            label: "Phone",
+            data: user.phone
+        },
+        {  id: 'email',
+            label: "email",
+            data: user.email
+        }];
+
+    const id = event.target.dataset.id;
+    const data = info.find((item) => item.id === id);
+    
+    createInfoELement(data);
 }
 
-const handleGetUserBtnClick = () => {
-    if (fetchButton.textContent === 'Back') {
-        handleAdditionButtonProps('flex');
-        fetchButton.textContent = 'Fetch User'
-        setActiveTab('');
-    }
-    else {
-        fetchUser();
-    }
-}
-// user?.dob?.age -> user.dob =  undefined -> Throw error
-const setActiveTab = (tabName) => {
-    const hideTabs = tabs.filter(tab => tab.name !== tabName);
-    hideTabs.map((tab) => tab.element.style.display = 'none')
-}
-
-document.addEventListener('DOMContentLoaded', fetchUser);
-ageButtons.addEventListener("click", () => handleAdditionInfoButtonClick('age'));
-phoneButtons.addEventListener("click", () => handleAdditionInfoButtonClick('phone'));
-emailButtons.addEventListener("click", () => handleAdditionInfoButtonClick('email'));
-fetchButton.addEventListener('click', handleGetUserBtnClick);
+infoButtons.map((btn) => btn.addEventListener("click", handleInfoButtonClick));
+fetchBtn.addEventListener("click", fetchUser);
+document.addEventListener('DOMContentLoaded',fetchUser);
