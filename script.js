@@ -1,16 +1,4 @@
 
-/**
- *  {
- *      info: page: 1 ,results: 1 ,seed: ,"80bcc66d0d0f0abd",
- *      results : [
- * {
- *          
- * }]
-
- *  }
- */
-
-
 let user = {};
 const imgElement = document.getElementById("img"),
   nameElement = document.getElementById("name"),
